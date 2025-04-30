@@ -15,7 +15,7 @@ manual installation guide for arch linux
     * root => `mount [root partition] /mnt`
     * efi => `mount [efi partition] /mnt/boot`
 5. install essential package
-    * execute command => `pacstrap -K /mnt base linux-lts linux-headers-lts linux linux-headers linux-firmware`
+    * execute command => `pacstrap -K /mnt base linux-lts linux-lts-headers linux linux-headers linux-firmware`
 6. generate fstab table list
     * execute command => `genfstab -U /mnt >> /mnt/etc/fstab`
 7. change root command
@@ -24,11 +24,11 @@ manual installation guide for arch linux
     * install package => `sudo pacman -S grub efibootmgr base-devel neovim git acpid btrfs-progs kitty`
     * install grub => `grub-install —efi-directory /boot --bootloader-id=GRUB --target=x86_64-efi`
     * create grub config => `grub-mkconfig -o /boot/grub/grub.cfg`
-9. edit `mkinitcipio`
-    * open config => `nvim /etc/mkinitcipio.conf`
+9. edit `mkinitcpio`
+    * open config => `nvim /etc/mkinitcpio.conf`
     * edit this line => `MODULES=(btrfs)`
-    * regenerate image for linux kernel => `mkinitcipio -p linux`
-    * regenerate image for linux-lts kernel => `mkinitcipio -p linux-lts`
+    * regenerate image for linux kernel => `mkinitcpio -p linux`
+    * regenerate image for linux-lts kernel => `mkinitcpio -p linux-lts`
     * recreate grub config => `grub-mkconfig -o /boot/grub/grub.cfg`
 10. config pacman
     * find file `/etc/pacman.conf` edit like this below 
@@ -136,15 +136,16 @@ manual installation guide for arch linux
     * download preload package => `yay -S preload`
     * enable preload service => `systemctl enable preload`
 27. install `zram` for swap
-    * install package => `yay -S zramd`
-    * enbale service => `systemctl enbale --now zramd.service`
+    * install package => `yay -S zram-swap`
+    * enbale service => `systemctl enbale --now zramswap.service`
 28. install `auto-cpufreq`
     * clone repository => `git clone https://github.com/AdnanHodzic/auto-cpufreq.git`
     * change dir => `cd /auto-cpufreq`
     * run installer => `./auto-cpufreq-installer`
     * install => `auto-cpufreq —install`
 29. install tools for backup snapshot
-    * install packages => `pacman -S timeshift grub-btrfs inotify-tools timeshift-autosnap`
+    * install packages => `pacman -S timeshift grub-btrfs inotify-tools`
+    * install packages => `yay -S timeshift-autosnap`
     * manually create grub snapshot entries => `/etc/grub.d/41_snapshots-btrfs`
     * recreate grub config => `grub-mkconfig -o /boot/grub/grub.cfg`
     * edit btrfsd config => `sudo systemctl edit --full grub-btrfsd`
