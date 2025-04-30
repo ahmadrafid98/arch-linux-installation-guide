@@ -12,7 +12,7 @@ manual installation guide for arch linux
     * create subvolume => `btrfs subvolume create @`
     * unmount root partition => `umount /mnt`
 4. mount efi and root partition
-    * root => `mount -o noatime,ssd,compress=zstd,space_cache=v2,discard=async,subvol=@ [root partition] /mnt`
+    * root => `mount [root partition] /mnt`
     * efi => `mount [efi partition] /mnt/boot`
 5. install essential package
     * execute command => `pacstrap -K /mnt base linux-lts linux-headers-lts linux linux-headers linux-firmware`
@@ -21,11 +21,11 @@ manual installation guide for arch linux
 7. change root command
     * execute command => `arch-chroot /mnt`
 8. install `grub` bootloader
-    * install package => `sudo pacman -S grub efibootmgr base-devel vim git acpid btrfs-progs`
+    * install package => `sudo pacman -S grub efibootmgr base-devel neovim git acpid btrfs-progs kitty`
     * install grub => `grub-install —efi-directory /boot --bootloader-id=GRUB --target=x86_64-efi`
     * create grub config => `grub-mkconfig -o /boot/grub/grub.cfg`
 9. edit `mkinitcipio`
-    * open config => `vim /etc/mkinitcipio.conf`
+    * open config => `nvim /etc/mkinitcipio.conf`
     * edit this line => `MODULES=(btrfs)`
     * regenerate image for linux kernel => `mkinitcipio -p linux`
     * regenerate image for linux-lts kernel => `mkinitcipio -p linux-lts`
@@ -50,7 +50,12 @@ manual installation guide for arch linux
 11. install `yay`
     * clone repository => `git clone https://aur.archlinux.org/yay.git`
     * change dir to `yay` => `cd yay`
-    * change config `makepkg` in file `/etc/makepkg.conf` uncomment line `MAKEFLAGS="-j2”` and edit that to be `MAKEFLAGS="-j$(nproc)”`
+    * change config `makepkg` in file `/etc/makepkg.conf` and edit this line
+      
+      ```bash
+      MAKEFLAGS="-j$(nproc)”
+      ```
+      
     * build package => `makepkg -si`
 12. set timezone
     * setting timezone => `ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime`
@@ -65,9 +70,19 @@ manual installation guide for arch linux
 
     * enable systemd-timesyncd service => `systemctl enable systemd-timesyncd.service`
 13. set localization
-    * edit file `/etc/locale.gen` and uncomment `en_US.UTF-8 UTF-8`
+    * edit file `/etc/locale.gen` and uncomment
+      
+      ```bash
+      en_US.UTF-8 UTF-8
+      ```
+      
     * execute command => `locale-gen`
-    * create file `etc/locale.conf` add `LANG=en_US.UTF-8`
+    * create file `etc/locale.conf` and add this line
+
+      ```bash
+      LANG=en_US.UTF-8
+      ```
+      
 14. set hostname
     * create file `/etc/hostname` add your hostname
 15. set password for root
@@ -80,9 +95,14 @@ manual installation guide for arch linux
 18. create new user
     * create new user => `useradd -m -G wheel -s /bin/zsh [username]`
     * set password => `passwd [username]`
-    * set env variable for editor => `export EDITOR=vim`
+    * set env variable for editor => `export EDITOR=nvim`
     * execute command => `visudo`
-    * uncomment `%wheel ALL=(ALL:ALL) ALL`
+    * uncomment this line
+       
+      ```bash
+      %wheel ALL=(ALL:ALL) ALL
+      ```
+      
 19. install `networkmanager`
     * execute command => `pacman -S networkmanager`
     * enable `networkmanager` => `systemctl enable NetworkManager`
@@ -128,7 +148,11 @@ manual installation guide for arch linux
     * manually create grub snapshot entries => `/etc/grub.d/41_snapshots-btrfs`
     * recreate grub config => `grub-mkconfig -o /boot/grub/grub.cfg`
     * edit btrfsd config => `sudo systemctl edit --full grub-btrfsd`
-    * edit this line => `ExecStart=/usr/bin/grub-btrfsd --syslog --timeshift-auto`
+    
+      ```bash
+      ExecStart=/usr/bin/grub-btrfsd --syslog --timeshift-auto
+      ```
+      
     * enable grub-btrfsd service => `systemctl enable grub-btrfsd`
 30. unmount all mounted partition
     * execute command => `umount -R /mnt`
