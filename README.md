@@ -1,5 +1,5 @@
-# Arch Linux Installation Guide
-manual installation guide for arch linux
+# Arch Linux Manual Installation Guide
+manual installation guide for arch linux, for more ease use experience please use archinstall instead
 
 1. config partition table use `gdisk`
     * efi => 1GB
@@ -47,17 +47,7 @@ manual installation guide for arch linux
     * add fastest mirror list => `reflector —verbose —latest 10 —protocol https —sort rate —save /etc/pacman.d/mirrorlist`
     * download pacman cache cleaner => `pacman -S pacman-contrib`
     * enable pacman cache cleaner => `systemctl enable paccache.timer`
-11. install `yay`
-    * clone repository => `git clone https://aur.archlinux.org/yay.git`
-    * change dir to `yay` => `cd yay`
-    * change config `makepkg` in file `/etc/makepkg.conf` and edit this line
-      
-      ```bash
-      MAKEFLAGS="-j$(nproc)”
-      ```
-      
-    * build package => `makepkg -si`
-12. set timezone
+11. set timezone
     * setting timezone => `ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime`
     * sync hardware clock with system clock => `hwclock --systohc`
     * edit file `/etc/systemd/timesyncd.conf`
@@ -69,7 +59,7 @@ manual installation guide for arch linux
     ```
 
     * enable systemd-timesyncd service => `systemctl enable systemd-timesyncd.service`
-13. set localization
+12. set localization
     * edit file `/etc/locale.gen` and uncomment
       
       ```bash
@@ -83,16 +73,16 @@ manual installation guide for arch linux
       LANG=en_US.UTF-8
       ```
       
-14. set hostname
+13. set hostname
     * create file `/etc/hostname` add your hostname
-15. set password for root
+14. set password for root
     * execute command => `passwd`
-16. install `openssh`
+15. install `openssh`
     * execute command => `pacman -S openssh`
     * enable service => `systemctl enable sshd`
-17. install `zsh` shell
+16. install `zsh` shell
     * execute command => `sudo pacman -S zsh`
-18. create new user
+17. create new user
     * create new user => `useradd -m -G wheel -s /bin/zsh [username]`
     * set password => `passwd [username]`
     * set env variable for editor => `export EDITOR=nvim`
@@ -102,58 +92,59 @@ manual installation guide for arch linux
       ```bash
       %wheel ALL=(ALL:ALL) ALL
       ```
-      
-19. install `networkmanager`
+
+18. edit config `makepkg`
+    * change config `makepkg` in file `/etc/makepkg.conf` and edit this line
+
+      ```bash
+      MAKEFLAGS="-j$(nproc)”
+      ```
+19. install `yay`
+    * clone repository => `git clone https://aur.archlinux.org/yay.git`
+    * change dir to `yay` => `cd yay`
+    * build package => `makepkg -si`     
+20. install `networkmanager`
     * execute command => `pacman -S networkmanager`
     * enable `networkmanager` => `systemctl enable NetworkManager`
-20. install desktop environment
+21. install desktop environment
     * Gnome
         a. execute command => `pacman -S xorg gnome gnome-tweaks`
         b. enable gnome display manager service => `systemctl enable gdm.service`
     * KDE Plasma
         a. execute command => `pacman -S xorg plasma kde-applications`
         b. enable kde display manager service => `systemctl enable sddm.service`
-21. install microcode
+22. install microcode
     * check processor vendor => `lscpu | grep "Vendor ID"`
     * AMD => `pacman -S amd-ucode`
     * Intel => `pacman -S intel-ucode`
     * create grub config => `grub-mkconfig -o [target mounting efi partition]/grub/grub.cfg`
-22. install graphic card driver
+23. install graphic card driver
     * check graphic card vendor => `lspci | grep VGA`
     * AMD => `pacman -S mesa libva-mesa-driver lib32-mesa vulkan-radeon lib32-vulkan-radeon`
     * Nvidia => `pacman -S nvidia nvidia-lts nvidia-utils nvidia-settings`
     * Intel => `pacman -S mesa intel-media-driver lib32-mesa vulkan-intel lib32-vulkan-intel`
-23. install bluetooth driver
+24. install bluetooth driver
     * execute command => `pacman -S bluez blueman bluez-utils`
     * load bluetooth kernel => `modprobe btusb`
     * enable bluetooth service => `systemctl enable bluetooth`
-24. install firewall
+25. install firewall
     * execute command => `pacman -S firewalld`
     * enable firewall service => `systemctl enable firewalld.service`
-25. install `xdg-user-dirs`
+26. install `xdg-user-dirs`
     * download package => `pacmans -S xdg-user-dirs`
-26. install `preload`
+27. install `preload`
     * download preload package => `yay -S preload`
     * enable preload service => `systemctl enable preload`
-27. install `zram` for swap
+28. install `zram` for swap
     * install package => `yay -S zram-swap`
     * enbale service => `systemctl enbale --now zramswap.service`
-28. install `auto-cpufreq`
+29. install `auto-cpufreq`
     * clone repository => `git clone https://github.com/AdnanHodzic/auto-cpufreq.git`
     * change dir => `cd /auto-cpufreq`
     * run installer => `./auto-cpufreq-installer`
     * install => `auto-cpufreq —install`
-29. install tools for backup snapshot
+30. install tools for backup snapshot
     * install packages => `pacman -S timeshift grub-btrfs inotify-tools`
     * install packages => `yay -S timeshift-autosnap`
-    * manually create grub snapshot entries => `/etc/grub.d/41_snapshots-btrfs`
-    * recreate grub config => `grub-mkconfig -o /boot/grub/grub.cfg`
-    * edit btrfsd config => `sudo systemctl edit --full grub-btrfsd`
-    
-      ```bash
-      ExecStart=/usr/bin/grub-btrfsd --syslog --timeshift-auto
-      ```
-      
-    * enable grub-btrfsd service => `systemctl enable grub-btrfsd`
-30. unmount all mounted partition
+31. unmount all mounted partition
     * execute command => `umount -R /mnt`
