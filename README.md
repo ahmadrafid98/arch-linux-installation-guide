@@ -7,13 +7,12 @@ manual installation guide for arch linux, for more ease use experience please us
 2. create filesystem base on partition table
     * efi => `mk.vfat -F 32` 
     * root => `mk.btrfs`
-3. create root btrfs subvolume
-    * mount partition => `mount [root partition] /mnt`
-    * create subvolume => `btrfs subvolume create @`
-    * unmount root partition => `umount /mnt`
-4. mount efi and root partition
+3. mount efi and root partition
     * root => `mount [root partition] /mnt`
     * efi => `mount [efi partition] /mnt/boot`
+4. create root btrfs subvolume
+    * change dir to mount point => `cd /mnt`
+    * create subvolume => `btrfs subvolume create @`
 5. install essential package
     * execute command => `pacstrap -K /mnt base linux-lts linux-lts-headers linux linux-headers linux-firmware`
 6. generate fstab table list
